@@ -15,7 +15,7 @@ struct ContentView: View {
         Group {
             switch viewModel.state {
             case .setup:
-                SettingsView(configStore: viewModel.configStore)
+                SetupView(configStore: viewModel.configStore, onComplete: { viewModel.settingsComplete() })
 
             case .dashboard:
                 DashboardView(viewModel: viewModel)
@@ -52,5 +52,14 @@ struct ContentView: View {
             }
         }
         .frame(minWidth: 600, minHeight: 480)
+        .overlay(alignment: .topLeading) {
+            if viewModel.canGoBack {
+                Button(action: { viewModel.goBack() }) {
+                    Label("Back", systemImage: "chevron.left")
+                }
+                .buttonStyle(.borderless)
+                .padding(10)
+            }
+        }
     }
 }

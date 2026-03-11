@@ -4,7 +4,6 @@ import UniformTypeIdentifiers
 struct DashboardView: View {
 
     @Bindable var viewModel: WorkflowViewModel
-    @State private var isSelectingCard = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -23,20 +22,16 @@ struct DashboardView: View {
             Spacer()
 
             if let card = viewModel.volumeMonitor.nikonCard {
-                CardReadyView(cardURL: card, onProceed: { isSelectingCard = true })
+                CardReadyView(cardURL: card, onProceed: { viewModel.scanCard(url: card) })
             } else {
                 WaitingView()
             }
 
             Spacer()
         }
-        .fileImporter(
-            isPresented: $isSelectingCard,
-            allowedContentTypes: [.folder],
-            allowsMultipleSelection: false
-        ) { result in
-            if case .success(let urls) = result, let url = urls.first {
-                viewModel.scanCard(url: url)
+        .onChange(of: viewModel.volumeMonitor.nikonCard) { old, new in
+            if old == nil, let card = new {
+                viewModel.scanCard(url: card)
             }
         }
     }

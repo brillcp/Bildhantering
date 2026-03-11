@@ -30,20 +30,15 @@ final class WorkflowViewModel {
         state = configStore.isConfigured ? .dashboard : .setup
     }
 
-    /// Called after the user has granted sandbox access via .fileImporter.
     func scanCard(url: URL) {
         guard case .dashboard = state else { return }
-        _ = url.startAccessingSecurityScopedResource()
         do {
             let info = try CardScanner.scan(cardURL: url)
-            cardAccessURL = url
             state = .cardDetected(info)
         } catch {
-            url.stopAccessingSecurityScopedResource()
+            // Card not ready or no images — stay on dashboard
         }
     }
-
-    private(set) var cardAccessURL: URL?
 
     func proceedToProjectPicker(card: CardInfo) {
         state = .projectPicker(card)
@@ -81,29 +76,45 @@ final class WorkflowViewModel {
                 cacheURL.stopAccessingSecurityScopedResource()
                 nasURL.stopAccessingSecurityScopedResource()
                 bildURL.stopAccessingSecurityScopedResource()
-                cardAccessURL?.stopAccessingSecurityScopedResource()
-                cardAccessURL = nil
                 state = .summary(result)
             } catch {
                 cacheURL.stopAccessingSecurityScopedResource()
                 nasURL.stopAccessingSecurityScopedResource()
                 bildURL.stopAccessingSecurityScopedResource()
-                cardAccessURL?.stopAccessingSecurityScopedResource()
-                cardAccessURL = nil
                 state = .dashboard
             }
         }
     }
 
     func ejectCard(url: URL) {
-        cardAccessURL?.stopAccessingSecurityScopedResource()
-        cardAccessURL = nil
         try? volumeMonitor.eject(url: url)
         state = configStore.isConfigured ? .dashboard : .setup
     }
 
     func returnToDashboard() {
         state = .dashboard
+    }
+
+    var canGoBack: Bool {
+        switch state {
+        case .cardDetected, .projectPicker, .metadataForm:
+            return true
+        default:
+            return false
+        }
+    }
+
+    func goBack() {
+        switch state {
+        case .cardDetected:
+            state = .dashboard
+        case .projectPicker(let card):
+            state = .cardDetected(card)
+        case .metadataForm(let card, _):
+            state = .projectPicker(card)
+        default:
+            break
+        }
     }
 
     // MARK: - Volume helpers
