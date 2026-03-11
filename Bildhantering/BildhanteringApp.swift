@@ -9,9 +9,20 @@ import SwiftUI
 
 @main
 struct BildhanteringApp: App {
+
+    @State private var viewModel = WorkflowViewModel()
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(viewModel: viewModel)
+                .onAppear { viewModel.onAppear() }
+                .onDisappear { viewModel.onDisappear() }
+        }
+        .defaultSize(width: 700, height: 520)
+        .windowResizability(.contentSize)
+
+        Settings {
+            SettingsView(configStore: viewModel.configStore)
         }
     }
 }

@@ -1,0 +1,49 @@
+import SwiftUI
+
+struct ImportProgressView: View {
+
+    let job: ImportJob
+    let engine: IngestEngine
+
+    var body: some View {
+        VStack(spacing: 24) {
+            Spacer()
+
+            Image(systemName: "arrow.triangle.2.circlepath")
+                .font(.system(size: 48))
+                .foregroundStyle(.secondary)
+                .symbolEffect(.rotate, isActive: engine.progress < 1)
+
+            VStack(spacing: 8) {
+                Text("Importing…")
+                    .font(.title2.bold())
+                Text("\(engine.filesProcessed) of \(engine.totalFiles) files")
+                    .foregroundStyle(.secondary)
+                if !engine.currentFileName.isEmpty {
+                    Text(engine.currentFileName)
+                        .font(.system(.caption, design: .monospaced))
+                        .foregroundStyle(.tertiary)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+                }
+            }
+
+            ProgressView(value: engine.progress)
+                .progressViewStyle(.linear)
+                .frame(maxWidth: 400)
+                .padding(.horizontal)
+
+            VStack(spacing: 4) {
+                Text("Card: \(job.card.name)")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+                Text("\(job.fotodatum) · \(job.projNamn) · \(job.arbNamn)")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+            }
+
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
