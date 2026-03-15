@@ -99,11 +99,13 @@ final class IngestEngine {
 
     private nonisolated static func renameFiles(_ files: [URL], job: ImportJob) throws -> [URL] {
         var renamed: [URL] = []
-        for file in files {
+        for (index, file) in files.enumerated() {
             let original = file.lastPathComponent
             let seqNr = CardScanner.sequenceNumber(from: original)
             let ext = file.pathExtension.uppercased()
-            let newName = "\(job.fotodatum)_\(seqNr)_\(job.arbNamn)_ErS.\(ext)"
+            let newName = index == 0
+                ? "\(job.fotodatum)_\(seqNr)_\(job.arbNamn)_ErS.\(ext)"
+                : "\(job.fotodatum)_\(seqNr)_\(job.arbNamn).\(ext)"
             let dest = file.deletingLastPathComponent().appendingPathComponent(newName)
             if !FileManager.default.fileExists(atPath: dest.path) {
                 try FileManager.default.moveItem(at: file, to: dest)
