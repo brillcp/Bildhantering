@@ -58,34 +58,24 @@ final class ConfigStore {
         cacheName != nil && nasName != nil && bildVerkstanName != nil
     }
 
-    // MARK: - Security-scoped bookmarks
+    func reset() {
+        UserDefaults.standard.removeObject(forKey: VolumeRole.cache.rawValue)
+        UserDefaults.standard.removeObject(forKey: VolumeRole.nas.rawValue)
+        UserDefaults.standard.removeObject(forKey: VolumeRole.bildVerkstan.rawValue)
+        cacheBookmarkVersion += 1
+        nasBookmarkVersion += 1
+        bildVerkstanBookmarkVersion += 1
+    }
+
+    // MARK: - URL storage (plain paths — sandbox disabled, no security scope needed)
 
     nonisolated func resolveURL(role: VolumeRole) -> URL? {
-        guard let data = UserDefaults.standard.data(forKey: role.rawValue) else { return nil }
-        var isStale = false
-        return try? URL(
-            resolvingBookmarkData: data,
-            options: .withSecurityScope,
-            relativeTo: nil,
-            bookmarkDataIsStale: &isStale
-        )
+        guard let path = UserDefaults.standard.string(forKey: role.rawValue), !path.isEmpty else { return nil }
+        return URL(fileURLWithPath: path)
     }
 
-    /// Returns the URL with security scope already started.
-    /// Caller **must** call `url.stopAccessingSecurityScopedResource()` when done.
-    nonisolated func accessURL(role: VolumeRole) -> URL? {
-        guard let url = resolveURL(role: role) else { return nil }
-        _ = url.startAccessingSecurityScopedResource()
-        return url
-    }
-
-    nonisolated func saveBookmark(url: URL, role: VolumeRole) throws {
-        let data = try url.bookmarkData(
-            options: .withSecurityScope,
-            includingResourceValuesForKeys: nil,
-            relativeTo: nil
-        )
-        UserDefaults.standard.set(data, forKey: role.rawValue)
+    private func savePath(url: URL, role: VolumeRole) {
+        UserDefaults.standard.set(url.path, forKey: role.rawValue)
     }
 
     // MARK: - Folder pickers
@@ -108,7 +98,7 @@ final class ConfigStore {
             .bildVerkstan: "Select BILD_verkstan folder"
         ]
         guard let url = await pickFolder(prompt: prompts[role] ?? "Select folder") else { return }
-        try? saveBookmark(url: url, role: role)
+        savePath(url: url, role: role)
         switch role {
         case .cache: cacheBookmarkVersion += 1
         case .nas: nasBookmarkVersion += 1

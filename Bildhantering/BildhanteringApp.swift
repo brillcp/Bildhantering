@@ -20,6 +20,14 @@ struct BildhanteringApp: App {
         }
         .defaultSize(width: 700, height: 520)
         .windowResizability(.contentSize)
+        .commands {
+            CommandGroup(after: .appSettings) {
+                Divider()
+                Button("Reset Folders…") {
+                    viewModel.resetToSetup()
+                }
+            }
+        }
 
         Settings {
             SettingsView(configStore: viewModel.configStore)

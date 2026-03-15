@@ -50,9 +50,9 @@ final class WorkflowViewModel {
 
     func startImport(card: CardInfo, fotodatum: String, projNamn: String, arbNamn: String) {
         guard
-            let cacheURL = configStore.accessURL(role: .cache),
-            let nasURL = configStore.accessURL(role: .nas),
-            let bildURL = configStore.accessURL(role: .bildVerkstan)
+            let cacheURL = configStore.resolveURL(role: .cache),
+            let nasURL = configStore.resolveURL(role: .nas),
+            let bildURL = configStore.resolveURL(role: .bildVerkstan)
         else { return }
 
         configStore.lastFotodatum = fotodatum
@@ -73,14 +73,8 @@ final class WorkflowViewModel {
         Task {
             do {
                 let result = try await ingestEngine.ingest(job: job)
-                cacheURL.stopAccessingSecurityScopedResource()
-                nasURL.stopAccessingSecurityScopedResource()
-                bildURL.stopAccessingSecurityScopedResource()
                 state = .summary(result)
             } catch {
-                cacheURL.stopAccessingSecurityScopedResource()
-                nasURL.stopAccessingSecurityScopedResource()
-                bildURL.stopAccessingSecurityScopedResource()
                 state = .dashboard
             }
         }
@@ -93,6 +87,11 @@ final class WorkflowViewModel {
 
     func returnToDashboard() {
         state = .dashboard
+    }
+
+    func resetToSetup() {
+        configStore.reset()
+        state = .setup
     }
 
     var canGoBack: Bool {
