@@ -7,7 +7,7 @@ final class VolumeMonitor {
     var mountedVolumes: [String: URL] = [:]   // name → URL
     var nikonCard: URL?
 
-    private var nikonPrefix: String = "Nikon"
+    private var nikonPrefix: String = "NIKON"
     private var observers: [NSObjectProtocol] = []
 
     // Notification names via string to be SDK-version agnostic

@@ -12,7 +12,7 @@ final class ConfigStore {
 
     // MARK: - Last-used metadata (stored properties for @Observable tracking)
 
-    var nikonCardPrefix: String = "Nikon" {
+    var nikonCardPrefix: String = "NIKON" {
         didSet { UserDefaults.standard.set(nikonCardPrefix, forKey: "nikonCardPrefix") }
     }
     var lastFotodatum: String = "" {
@@ -31,7 +31,7 @@ final class ConfigStore {
     var bildVerkstanBookmarkVersion: Int = 0
 
     init() {
-        nikonCardPrefix = UserDefaults.standard.string(forKey: "nikonCardPrefix") ?? "Nikon"
+        nikonCardPrefix = UserDefaults.standard.string(forKey: "nikonCardPrefix") ?? "NIKON"
         lastFotodatum = UserDefaults.standard.string(forKey: "lastFotodatum") ?? ""
         lastProjNamn = UserDefaults.standard.string(forKey: "lastProjNamn") ?? ""
         lastArbNamn = UserDefaults.standard.string(forKey: "lastArbNamn") ?? ""

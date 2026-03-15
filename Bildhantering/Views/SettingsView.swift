@@ -17,17 +17,17 @@ struct SettingsView: View {
 
                 Section("Volumes") {
                     VolumeRow(
-                        label: "Cache / RAW_2",
+                        label: "Backup",
                         name: configStore.cacheName,
                         action: { Task { await configStore.pickVolume(role: .cache) } }
                     )
                     VolumeRow(
-                        label: "NAS / RAW_1",
+                        label: "NAS",
                         name: configStore.nasName,
                         action: { Task { await configStore.pickVolume(role: .nas) } }
                     )
                     VolumeRow(
-                        label: "BILD_verkstan",
+                        label: "Bildverkstan",
                         name: configStore.bildVerkstanName,
                         action: { Task { await configStore.pickVolume(role: .bildVerkstan) } }
                     )

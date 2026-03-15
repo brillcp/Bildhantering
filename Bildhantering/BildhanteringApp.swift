@@ -13,7 +13,7 @@ struct BildhanteringApp: App {
     @State private var viewModel = WorkflowViewModel()
 
     var body: some Scene {
-        WindowGroup {
+        Window("Bildhantering", id: "Main") {
             ContentView(viewModel: viewModel)
                 .onAppear { viewModel.onAppear() }
                 .onDisappear { viewModel.onDisappear() }

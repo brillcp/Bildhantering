@@ -26,7 +26,7 @@ struct SetupView: View {
             VStack(spacing: 0) {
                 SetupRow(
                     icon: "internaldrive",
-                    title: "Cache / RAW_2",
+                    title: "Backup",
                     subtitle: "Fast local cache drive",
                     name: configStore.cacheName,
                     action: { Task { await configStore.pickVolume(role: .cache) } }
@@ -34,7 +34,7 @@ struct SetupView: View {
                 Divider().padding(.leading, 52)
                 SetupRow(
                     icon: "server.rack",
-                    title: "NAS / RAW_1",
+                    title: "NAS",
                     subtitle: "Network attached storage",
                     name: configStore.nasName,
                     action: { Task { await configStore.pickVolume(role: .nas) } }
@@ -42,7 +42,7 @@ struct SetupView: View {
                 Divider().padding(.leading, 52)
                 SetupRow(
                     icon: "folder",
-                    title: "BILD_verkstan",
+                    title: "Bildverkstan",
                     subtitle: "Project library folder",
                     name: configStore.bildVerkstanName,
                     action: { Task { await configStore.pickVolume(role: .bildVerkstan) } }

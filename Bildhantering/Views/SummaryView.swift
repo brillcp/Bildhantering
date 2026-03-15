@@ -25,7 +25,7 @@ struct SummaryView: View {
 
             // Destination folders
             if let first = result.cacheFolders.first {
-                PathLabel(prefix: "Cache", url: first)
+                PathLabel(prefix: "Backup", url: first)
             }
             if let first = result.nasFolders.first {
                 PathLabel(prefix: "NAS", url: first)
