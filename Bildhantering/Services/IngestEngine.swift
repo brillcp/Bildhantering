@@ -104,8 +104,8 @@ final class IngestEngine {
             let seqNr = CardScanner.sequenceNumber(from: original)
             let ext = file.pathExtension.uppercased()
             let newName = index == 0
-                ? "\(job.fotodatum)_\(seqNr)_\(job.arbNamn)_ErS.\(ext)"
-                : "\(job.fotodatum)_\(seqNr)_\(job.arbNamn).\(ext)"
+                ? "\(job.fotodatum)_\(seqNr)_\(job.projNamn)_ErS.\(ext)"
+                : "\(job.fotodatum)_\(seqNr)_\(job.projNamn).\(ext)"
             let dest = file.deletingLastPathComponent().appendingPathComponent(newName)
             if !FileManager.default.fileExists(atPath: dest.path) {
                 try FileManager.default.moveItem(at: file, to: dest)
