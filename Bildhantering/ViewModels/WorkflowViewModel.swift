@@ -75,7 +75,14 @@ final class WorkflowViewModel {
                 let result = try await ingestEngine.ingest(job: job)
                 state = .summary(result)
             } catch {
-                state = .dashboard
+                let failed = ImportResult(
+                    filesCopied: 0,
+                    cacheFolders: [],
+                    nasFolders: [],
+                    errors: [error.localizedDescription],
+                    cardURL: job.card.url
+                )
+                state = .summary(failed)
             }
         }
     }

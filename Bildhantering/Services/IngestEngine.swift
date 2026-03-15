@@ -15,7 +15,7 @@ final class IngestEngine {
     func ingest(job: ImportJob) async throws -> ImportResult {
         errors = []
         filesProcessed = 0
-        totalFiles = job.card.totalFileCount
+        totalFiles = job.card.totalFileCount * 2  // cache copy + NAS copy
         progress = 0
 
         var allCacheFolders: [URL] = []
@@ -57,31 +57,26 @@ final class IngestEngine {
         let firstSeq = CardScanner.sequenceNumber(from: imageFiles.first!.lastPathComponent)
         let lastSeq = CardScanner.sequenceNumber(from: imageFiles.last!.lastPathComponent)
 
-        // Step 3: Rename files on the card
-        let renamedFiles = try await Task.detached(priority: .utility) { [job] in
-            try Self.renameFiles(imageFiles, job: job)
-        }.value
-
-        // Step 4: Create cache folder and copy
+        // Step 3: Create cache folder and copy with rename (never modifies the card)
         let cacheFolderName = "\(job.fotodatum)_\(job.arbNamn)_\(firstSeq)-\(lastSeq)_\(job.projNamn)_RAW_2"
         let cacheFolder = job.cacheURL.appendingPathComponent(cacheFolderName)
         try createFolder(at: cacheFolder)
 
-        let copiedToCache = try await copyFiles(renamedFiles, to: cacheFolder)
+        let copiedToCache = try await copyAndRenameFiles(imageFiles, to: cacheFolder, job: job)
 
-        // Step 5: Create NAS session folder
+        // Step 4: Create NAS session folder
         let sessionFolderName = "\(job.fotodatum)_\(firstSeq)-\(lastSeq)_\(job.projNamn)_\(job.arbNamn)"
         let nasSessionFolder = job.nasURL.appendingPathComponent(sessionFolderName)
         try createFolder(at: nasSessionFolder)
 
-        // Step 6: Create BILD_verkstan folder structure + alias
+        // Step 5: Create BILD_verkstan folder structure + alias
         let bildProjFolder = job.bildVerkstanURL.appendingPathComponent(job.projNamn)
         let bildArbFolder = bildProjFolder.appendingPathComponent(job.arbNamn)
         try createFolder(at: bildProjFolder)
         try createFolder(at: bildArbFolder)
         try createAlias(at: bildArbFolder.appendingPathComponent(sessionFolderName), pointingTo: nasSessionFolder)
 
-        // Step 7: Copy from cache to NAS
+        // Step 6: Copy from cache to NAS
         let nasFiles = (try? fm.contentsOfDirectory(at: cacheFolder, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)) ?? []
         let nasImageFiles = nasFiles.filter { CardScanner.isImageFile($0) }
         _ = try await copyFiles(nasImageFiles, to: nasSessionFolder)
@@ -97,22 +92,35 @@ final class IngestEngine {
 
     // MARK: - File operations
 
-    private nonisolated static func renameFiles(_ files: [URL], job: ImportJob) throws -> [URL] {
-        var renamed: [URL] = []
+    /// Copies files from source to destination, applying the rename pattern (date_seq_proj_ErS.ext).
+    /// Never touches the source files — the card is left unchanged.
+    private func copyAndRenameFiles(_ files: [URL], to destination: URL, job: ImportJob) async throws -> Int {
+        let fm = FileManager.default
+        var copied = 0
+
         for (index, file) in files.enumerated() {
-            let original = file.lastPathComponent
-            let seqNr = CardScanner.sequenceNumber(from: original)
+            let seqNr = CardScanner.sequenceNumber(from: file.lastPathComponent)
             let ext = file.pathExtension.uppercased()
             let newName = index == 0
                 ? "\(job.fotodatum)_\(seqNr)_\(job.projNamn)_ErS.\(ext)"
                 : "\(job.fotodatum)_\(seqNr)_\(job.projNamn).\(ext)"
-            let dest = file.deletingLastPathComponent().appendingPathComponent(newName)
-            if !FileManager.default.fileExists(atPath: dest.path) {
-                try FileManager.default.moveItem(at: file, to: dest)
+            currentFileName = newName
+            let dest = destination.appendingPathComponent(newName)
+            do {
+                if fm.fileExists(atPath: dest.path) {
+                    try fm.removeItem(at: dest)
+                }
+                try await Task.detached(priority: .utility) {
+                    try fm.copyItem(at: file, to: dest)
+                }.value
+                copied += 1
+            } catch {
+                errors.append("\(file.lastPathComponent): \(error.localizedDescription)")
             }
-            renamed.append(dest)
+            filesProcessed += 1
+            progress = totalFiles > 0 ? Double(filesProcessed) / Double(totalFiles) : 0
         }
-        return renamed
+        return copied
     }
 
     private func copyFiles(_ files: [URL], to destination: URL) async throws -> Int {
@@ -131,7 +139,7 @@ final class IngestEngine {
                 }.value
                 copied += 1
             } catch {
-                errors.append("Failed to copy \(file.lastPathComponent): \(error.localizedDescription)")
+                errors.append("\(file.lastPathComponent): \(error.localizedDescription)")
             }
             filesProcessed += 1
             progress = totalFiles > 0 ? Double(filesProcessed) / Double(totalFiles) : 0
