@@ -79,7 +79,8 @@ struct MetadataFormView: View {
                     let proj = projNamn.isEmpty ? "projektnamn" : projNamn
                     let arb = arbNamn.isEmpty ? "arbnamn" : arbNamn
                     let sig = configStore.signature.isEmpty ? "ErS" : configStore.signature
-                    Text("\(fotodatum)_\(first)_\(proj)__\(arb)__\(sig).NEF")
+                    let title = "\(fotodatum)_\(first)_\(proj)_\(arb)_\(sig).NEF"
+                    Text(title)
                         .font(.system(.caption, design: .monospaced))
                         .foregroundStyle(.secondary)
                 }
