@@ -75,9 +75,14 @@ struct MetadataFormView: View {
                 }
 
                 Section("Förhandsgranskning") {
-                    Text("\(fotodatum)_\(card.firstSeqNr.isEmpty ? "0001" : card.firstSeqNr)_\(arbNamn.isEmpty ? "arbnamn" : arbNamn)_ErS.NEF")
+                    let first = card.firstSeqNr.isEmpty ? "0001" : card.firstSeqNr
+                    let arb = arbNamn.isEmpty ? "arbnamn" : arbNamn
+                    Text("\(fotodatum)_\(first)_\(arb)_ErS.NEF")
                         .font(.system(.caption, design: .monospaced))
                         .foregroundStyle(.secondary)
+                    Text("\(fotodatum)_\(card.lastSeqNr.isEmpty ? "0002" : card.lastSeqNr)_\(arb).NEF")
+                        .font(.system(.caption, design: .monospaced))
+                        .foregroundStyle(.tertiary)
                 }
             }
             .formStyle(.grouped)
