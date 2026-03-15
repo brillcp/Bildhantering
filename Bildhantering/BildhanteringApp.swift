@@ -23,8 +23,8 @@ struct BildhanteringApp: App {
         .commands {
             CommandGroup(after: .appSettings) {
                 Divider()
-                Button("Reset Folders…") {
-                    viewModel.resetToSetup()
+                Button(action: viewModel.resetToSetup) {
+                    Label("Reset folders…", systemImage: "xmark.bin")
                 }
             }
         }
