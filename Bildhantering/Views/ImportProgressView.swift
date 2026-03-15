@@ -34,7 +34,7 @@ struct ImportProgressView: View {
                 .padding(.horizontal)
 
             VStack(spacing: 4) {
-                Text("Card: \(job.card.name)")
+                Text("Kort: \(job.card.name)")
                     .font(.caption)
                     .foregroundStyle(.tertiary)
                 Text("\(job.fotodatum) · \(job.projNamn) · \(job.arbNamn)")

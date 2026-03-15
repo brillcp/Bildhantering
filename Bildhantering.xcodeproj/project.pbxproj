@@ -86,11 +86,11 @@
 				};
 			};
 			buildConfigurationList = D50C2D3F2F5F3117004BA6FB /* Build configuration list for PBXProject "Bildhantering" */;
-			developmentRegion = en;
+			developmentRegion = sv;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				en,
 				Base,
+				sv,
 			);
 			mainGroup = D50C2D3B2F5F3117004BA6FB;
 			minimizedProjectReferenceProxies = 1;
