@@ -52,13 +52,18 @@ struct ContentView: View {
             }
         }
         .frame(minWidth: 600, minHeight: 480)
-        .overlay(alignment: .topLeading) {
+        .safeAreaInset(edge: .top, spacing: 0) {
             if viewModel.canGoBack {
-                Button(action: { viewModel.goBack() }) {
-                    Label("Back", systemImage: "chevron.left")
+                HStack {
+                    Button(action: { viewModel.goBack() }) {
+                        Label("Back", systemImage: "chevron.left")
+                    }
+                    .buttonStyle(.borderless)
+                    Spacer()
                 }
-                .buttonStyle(.borderless)
-                .padding(10)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                Divider()
             }
         }
     }
