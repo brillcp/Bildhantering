@@ -67,13 +67,17 @@ struct CardScanner {
 
     // MARK: - Helpers
 
-    /// Extracts chars -8 thru -5 from filename (Nikon sequence number).
-    /// e.g. "DSC_0042.NEF" → "0042"
+    /// Extracts the sequence number from a filename by finding the last run of 4+ digits.
+    /// e.g. "DSC_0042.NEF" → "0042", "_DSC0042.NEF" → "0042"
     nonisolated static func sequenceNumber(from filename: String) -> String {
-        guard filename.count >= 8 else { return "0000" }
-        let start = filename.index(filename.endIndex, offsetBy: -8)
-        let end = filename.index(filename.endIndex, offsetBy: -4)
-        return String(filename[start..<end])
+        let name = (filename as NSString).deletingPathExtension
+        let regex = try! NSRegularExpression(pattern: "\\d{4,}")
+        let nsName = name as NSString
+        let matches = regex.matches(in: name, range: NSRange(location: 0, length: nsName.length))
+        if let last = matches.last {
+            return String(nsName.substring(with: last.range).suffix(4))
+        }
+        return "0000"
     }
 
     nonisolated static func isImageFile(_ url: URL) -> Bool {

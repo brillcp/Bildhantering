@@ -77,10 +77,11 @@ struct MetadataFormView: View {
                 Section("Förhandsgranskning") {
                     let first = card.firstSeqNr.isEmpty ? "0001" : card.firstSeqNr
                     let proj = projNamn.isEmpty ? "projektnamn" : projNamn
-                    Text("\(fotodatum)_\(first)_\(proj)_ErS.NEF")
+                    let arb = arbNamn.isEmpty ? "arbnamn" : arbNamn
+                    Text("\(fotodatum)_\(first)_\(proj)_\(arb)_ErS.NEF")
                         .font(.system(.caption, design: .monospaced))
                         .foregroundStyle(.secondary)
-                    Text("\(fotodatum)_\(card.lastSeqNr.isEmpty ? "0002" : card.lastSeqNr)_\(proj).NEF")
+                    Text("\(fotodatum)_\(card.lastSeqNr.isEmpty ? "0002" : card.lastSeqNr)_\(proj)_\(arb)_ErS.NEF")
                         .font(.system(.caption, design: .monospaced))
                         .foregroundStyle(.tertiary)
                 }

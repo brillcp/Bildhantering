@@ -92,27 +92,30 @@ final class IngestEngine {
 
     // MARK: - File operations
 
-    /// Copies files from source to destination, applying the rename pattern (date_seq_proj_ErS.ext).
-    /// Never touches the source files — the card is left unchanged.
+    /// Copies each file to destination with its original name, then renames it in place.
+    /// The card is never touched.
     private func copyAndRenameFiles(_ files: [URL], to destination: URL, job: ImportJob) async throws -> Int {
         let fm = FileManager.default
         var copied = 0
 
         for (index, file) in files.enumerated() {
-            let seqNr = CardScanner.sequenceNumber(from: file.lastPathComponent)
-            let ext = file.pathExtension.uppercased()
-            let newName = index == 0
-                ? "\(job.fotodatum)_\(seqNr)_\(job.projNamn)_ErS.\(ext)"
-                : "\(job.fotodatum)_\(seqNr)_\(job.projNamn).\(ext)"
-            currentFileName = newName
-            let dest = destination.appendingPathComponent(newName)
+            currentFileName = file.lastPathComponent
+            let temp = destination.appendingPathComponent(file.lastPathComponent)
             do {
-                if fm.fileExists(atPath: dest.path) {
-                    try fm.removeItem(at: dest)
-                }
+                // Step 1: Copy with original name
+                if fm.fileExists(atPath: temp.path) { try fm.removeItem(at: temp) }
                 try await Task.detached(priority: .utility) {
-                    try fm.copyItem(at: file, to: dest)
+                    try fm.copyItem(at: file, to: temp)
                 }.value
+
+                // Step 2: Rename in destination using original filename for seq extraction
+                let seqNr = CardScanner.sequenceNumber(from: file.lastPathComponent)
+                let ext = file.pathExtension.uppercased()
+                let newName = "\(job.fotodatum)_\(seqNr)_\(job.projNamn)_\(job.arbNamn)_ErS.\(ext)"
+                let dest = destination.appendingPathComponent(newName)
+                if fm.fileExists(atPath: dest.path) { try fm.removeItem(at: dest) }
+                try fm.moveItem(at: temp, to: dest)
+                currentFileName = newName
                 copied += 1
             } catch {
                 errors.append("\(file.lastPathComponent): \(error.localizedDescription)")
