@@ -17,6 +17,7 @@ struct ImportJob {
     let fotodatum: String   // YYMMDD
     let projNamn: String
     let arbNamn: String
+    let signature: String
 }
 
 struct ImportResult {

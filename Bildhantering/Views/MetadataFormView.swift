@@ -78,12 +78,10 @@ struct MetadataFormView: View {
                     let first = card.firstSeqNr.isEmpty ? "0001" : card.firstSeqNr
                     let proj = projNamn.isEmpty ? "projektnamn" : projNamn
                     let arb = arbNamn.isEmpty ? "arbnamn" : arbNamn
-                    Text("\(fotodatum)_\(first)_\(proj)_\(arb)_ErS.NEF")
+                    let sig = configStore.signature.isEmpty ? "ErS" : configStore.signature
+                    Text("\(fotodatum)_\(first)_\(proj)__\(arb)__\(sig).NEF")
                         .font(.system(.caption, design: .monospaced))
                         .foregroundStyle(.secondary)
-                    Text("\(fotodatum)_\(card.lastSeqNr.isEmpty ? "0002" : card.lastSeqNr)_\(proj)_\(arb)_ErS.NEF")
-                        .font(.system(.caption, design: .monospaced))
-                        .foregroundStyle(.tertiary)
                 }
             }
             .formStyle(.grouped)

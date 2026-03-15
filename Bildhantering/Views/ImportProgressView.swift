@@ -4,6 +4,7 @@ struct ImportProgressView: View {
 
     let job: ImportJob
     let engine: IngestEngine
+    let onCancel: () -> Void
 
     var body: some View {
         VStack(spacing: 24) {
@@ -41,6 +42,9 @@ struct ImportProgressView: View {
                     .font(.caption)
                     .foregroundStyle(.tertiary)
             }
+
+            Button("Avbryt", action: onCancel)
+                .buttonStyle(.bordered)
 
             Spacer()
         }

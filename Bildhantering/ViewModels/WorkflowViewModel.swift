@@ -9,6 +9,7 @@ final class WorkflowViewModel {
     let configStore = ConfigStore()
     let volumeMonitor = VolumeMonitor()
     let ingestEngine = IngestEngine()
+    private var importTask: Task<Void, Never>?
 
     init() {
         state = configStore.isConfigured ? .dashboard : .setup
@@ -66,14 +67,17 @@ final class WorkflowViewModel {
             bildVerkstanURL: bildURL,
             fotodatum: fotodatum,
             projNamn: projNamn,
-            arbNamn: arbNamn
+            arbNamn: arbNamn,
+            signature: configStore.signature.isEmpty ? "ErS" : configStore.signature
         )
         state = .importing(job)
 
-        Task {
+        importTask = Task {
             do {
                 let result = try await ingestEngine.ingest(job: job)
                 state = .summary(result)
+            } catch is CancellationError {
+                state = .dashboard
             } catch {
                 let failed = ImportResult(
                     filesCopied: 0,
@@ -85,6 +89,11 @@ final class WorkflowViewModel {
                 state = .summary(failed)
             }
         }
+    }
+
+    func cancelImport() {
+        importTask?.cancel()
+        importTask = nil
     }
 
     func ejectCard(url: URL) {

@@ -15,6 +15,9 @@ final class ConfigStore {
     var nikonCardPrefix: String = "NIKON" {
         didSet { UserDefaults.standard.set(nikonCardPrefix, forKey: "nikonCardPrefix") }
     }
+    var signature: String = "ErS" {
+        didSet { UserDefaults.standard.set(signature, forKey: "signature") }
+    }
     var lastFotodatum: String = "" {
         didSet { UserDefaults.standard.set(lastFotodatum, forKey: "lastFotodatum") }
     }
@@ -37,6 +40,7 @@ final class ConfigStore {
 
     init() {
         nikonCardPrefix = UserDefaults.standard.string(forKey: "nikonCardPrefix") ?? "NIKON"
+        signature       = UserDefaults.standard.string(forKey: "signature") ?? "ErS"
         lastFotodatum   = UserDefaults.standard.string(forKey: "lastFotodatum") ?? ""
         lastProjNamn    = UserDefaults.standard.string(forKey: "lastProjNamn") ?? ""
         lastArbNamn     = UserDefaults.standard.string(forKey: "lastArbNamn") ?? ""

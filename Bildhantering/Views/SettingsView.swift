@@ -13,6 +13,10 @@ struct SettingsView: View {
                         TextField("Nikon", text: $configStore.nikonCardPrefix)
                             .frame(width: 120)
                     }
+                    LabeledContent("Signatur") {
+                        TextField("ErS", text: $configStore.signature)
+                            .frame(width: 80)
+                    }
                 }
 
                 Section("Volymer") {

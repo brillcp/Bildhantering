@@ -43,7 +43,7 @@ struct ContentView: View {
                 )
 
             case .importing(let job):
-                ImportProgressView(job: job, engine: viewModel.ingestEngine)
+                ImportProgressView(job: job, engine: viewModel.ingestEngine, onCancel: { viewModel.cancelImport() })
 
             case .summary(let result):
                 SummaryView(result: result) {

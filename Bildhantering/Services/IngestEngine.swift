@@ -99,6 +99,7 @@ final class IngestEngine {
         var copied = 0
 
         for (index, file) in files.enumerated() {
+            try Task.checkCancellation()
             currentFileName = file.lastPathComponent
             let temp = destination.appendingPathComponent(file.lastPathComponent)
             do {
@@ -111,7 +112,7 @@ final class IngestEngine {
                 // Step 2: Rename in destination using original filename for seq extraction
                 let seqNr = CardScanner.sequenceNumber(from: file.lastPathComponent)
                 let ext = file.pathExtension.uppercased()
-                let newName = "\(job.fotodatum)_\(seqNr)_\(job.projNamn)_\(job.arbNamn)_ErS.\(ext)"
+                let newName = "\(job.fotodatum)_\(seqNr)_\(job.projNamn)_\(job.arbNamn)_\(job.signature).\(ext)"
                 let dest = destination.appendingPathComponent(newName)
                 if fm.fileExists(atPath: dest.path) { try fm.removeItem(at: dest) }
                 try fm.moveItem(at: temp, to: dest)
@@ -131,6 +132,7 @@ final class IngestEngine {
         var copied = 0
 
         for file in files {
+            try Task.checkCancellation()
             currentFileName = file.lastPathComponent
             let dest = destination.appendingPathComponent(file.lastPathComponent)
             do {
