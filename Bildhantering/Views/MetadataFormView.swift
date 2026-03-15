@@ -63,12 +63,12 @@ struct MetadataFormView: View {
 
                 Section("Namngivning") {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Projekt (projNamn)").font(.caption).foregroundStyle(.secondary)
-                        TextField("t.ex. KarlssonBrollop", text: $projNamn)
+                        Text("Projekt name").font(.caption).foregroundStyle(.secondary)
+                        TextField("t.ex. Karlsson Bröllop", text: $projNamn)
                             .textFieldStyle(.roundedBorder)
                     }
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Arbetsnamn (arbNamn)").font(.caption).foregroundStyle(.secondary)
+                        Text("Arbetsnamn").font(.caption).foregroundStyle(.secondary)
                         TextField("t.ex. Ceremoni", text: $arbNamn)
                             .textFieldStyle(.roundedBorder)
                     }
