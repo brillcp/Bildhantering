@@ -10,7 +10,7 @@ enum VolumeRole: String {
 @Observable
 final class ConfigStore {
 
-    // MARK: - Last-used metadata (stored properties for @Observable tracking)
+    // MARK: - Stored properties (@Observable tracks these directly)
 
     var nikonCardPrefix: String = "NIKON" {
         didSet { UserDefaults.standard.set(nikonCardPrefix, forKey: "nikonCardPrefix") }
@@ -25,57 +25,46 @@ final class ConfigStore {
         didSet { UserDefaults.standard.set(lastArbNamn, forKey: "lastArbNamn") }
     }
 
-    // Trigger UI updates when bookmarks change
-    var cacheBookmarkVersion: Int = 0
-    var nasBookmarkVersion: Int = 0
-    var bildVerkstanBookmarkVersion: Int = 0
+    var cachePath: String? {
+        didSet { UserDefaults.standard.set(cachePath, forKey: VolumeRole.cache.rawValue) }
+    }
+    var nasPath: String? {
+        didSet { UserDefaults.standard.set(nasPath, forKey: VolumeRole.nas.rawValue) }
+    }
+    var bildVerkstanPath: String? {
+        didSet { UserDefaults.standard.set(bildVerkstanPath, forKey: VolumeRole.bildVerkstan.rawValue) }
+    }
 
     init() {
         nikonCardPrefix = UserDefaults.standard.string(forKey: "nikonCardPrefix") ?? "NIKON"
-        lastFotodatum = UserDefaults.standard.string(forKey: "lastFotodatum") ?? ""
-        lastProjNamn = UserDefaults.standard.string(forKey: "lastProjNamn") ?? ""
-        lastArbNamn = UserDefaults.standard.string(forKey: "lastArbNamn") ?? ""
+        lastFotodatum   = UserDefaults.standard.string(forKey: "lastFotodatum") ?? ""
+        lastProjNamn    = UserDefaults.standard.string(forKey: "lastProjNamn") ?? ""
+        lastArbNamn     = UserDefaults.standard.string(forKey: "lastArbNamn") ?? ""
+        cachePath        = UserDefaults.standard.string(forKey: VolumeRole.cache.rawValue)
+        nasPath          = UserDefaults.standard.string(forKey: VolumeRole.nas.rawValue)
+        bildVerkstanPath = UserDefaults.standard.string(forKey: VolumeRole.bildVerkstan.rawValue)
     }
 
-    // MARK: - Display names
-    // Each property reads its version counter so @Observable registers the dependency.
-    // When pickVolume() increments the counter, SwiftUI re-evaluates these computed properties.
+    // MARK: - Derived
 
-    var cacheName: String? {
-        _ = cacheBookmarkVersion
-        return resolveURL(role: .cache)?.lastPathComponent
-    }
-    var nasName: String? {
-        _ = nasBookmarkVersion
-        return resolveURL(role: .nas)?.lastPathComponent
-    }
-    var bildVerkstanName: String? {
-        _ = bildVerkstanBookmarkVersion
-        return resolveURL(role: .bildVerkstan)?.lastPathComponent
-    }
+    var cacheName: String?        { cachePath.map { URL(fileURLWithPath: $0).lastPathComponent } }
+    var nasName: String?          { nasPath.map { URL(fileURLWithPath: $0).lastPathComponent } }
+    var bildVerkstanName: String? { bildVerkstanPath.map { URL(fileURLWithPath: $0).lastPathComponent } }
 
-    var isConfigured: Bool {
-        cacheName != nil && nasName != nil && bildVerkstanName != nil
+    var isConfigured: Bool { cachePath != nil && nasPath != nil && bildVerkstanPath != nil }
+
+    func resolveURL(role: VolumeRole) -> URL? {
+        switch role {
+        case .cache:        return cachePath.map { URL(fileURLWithPath: $0) }
+        case .nas:          return nasPath.map { URL(fileURLWithPath: $0) }
+        case .bildVerkstan: return bildVerkstanPath.map { URL(fileURLWithPath: $0) }
+        }
     }
 
     func reset() {
-        UserDefaults.standard.removeObject(forKey: VolumeRole.cache.rawValue)
-        UserDefaults.standard.removeObject(forKey: VolumeRole.nas.rawValue)
-        UserDefaults.standard.removeObject(forKey: VolumeRole.bildVerkstan.rawValue)
-        cacheBookmarkVersion += 1
-        nasBookmarkVersion += 1
-        bildVerkstanBookmarkVersion += 1
-    }
-
-    // MARK: - URL storage (plain paths — sandbox disabled, no security scope needed)
-
-    nonisolated func resolveURL(role: VolumeRole) -> URL? {
-        guard let path = UserDefaults.standard.string(forKey: role.rawValue), !path.isEmpty else { return nil }
-        return URL(fileURLWithPath: path)
-    }
-
-    private func savePath(url: URL, role: VolumeRole) {
-        UserDefaults.standard.set(url.path, forKey: role.rawValue)
+        cachePath = nil
+        nasPath = nil
+        bildVerkstanPath = nil
     }
 
     // MARK: - Folder pickers
@@ -98,11 +87,10 @@ final class ConfigStore {
             .bildVerkstan: "Select Bildverkstan folder"
         ]
         guard let url = await pickFolder(prompt: prompts[role] ?? "Select folder") else { return }
-        savePath(url: url, role: role)
         switch role {
-        case .cache: cacheBookmarkVersion += 1
-        case .nas: nasBookmarkVersion += 1
-        case .bildVerkstan: bildVerkstanBookmarkVersion += 1
+        case .cache:        cachePath = url.path
+        case .nas:          nasPath = url.path
+        case .bildVerkstan: bildVerkstanPath = url.path
         }
     }
 }

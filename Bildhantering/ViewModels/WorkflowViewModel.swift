@@ -119,6 +119,7 @@ final class WorkflowViewModel {
     // MARK: - Volume helpers
 
     func volumeStatus(for role: VolumeRole) -> Bool {
+        _ = volumeMonitor.mountedVolumes  // register dependency so dots update on mount/unmount
         guard let url = configStore.resolveURL(role: role) else { return false }
         return FileManager.default.fileExists(atPath: url.path)
     }
