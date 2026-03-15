@@ -41,9 +41,9 @@ struct MetadataFormView: View {
         VStack(spacing: 0) {
             HStack {
                 VStack(alignment: .leading) {
-                    Text("Job Details")
+                    Text("Jobbdetaljer")
                         .font(.title2.bold())
-                    Text("Card: \(card.name) · \(card.totalFileCount) files")
+                    Text("Kort: \(card.name) · \(card.totalFileCount) filer")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -54,27 +54,27 @@ struct MetadataFormView: View {
             Divider()
 
             Form {
-                Section("Photo Date") {
-                    DatePicker("Date", selection: $date, displayedComponents: .date)
-                    Text("File prefix: \(fotodatum)")
+                Section("Fotodatum") {
+                    DatePicker("Datum", selection: $date, displayedComponents: .date)
+                    Text("Filprefix: \(fotodatum)")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
 
-                Section("Naming") {
+                Section("Namngivning") {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Project (projNamn)").font(.caption).foregroundStyle(.secondary)
-                        TextField("e.g. KarlssonBrollop", text: $projNamn)
+                        Text("Projekt (projNamn)").font(.caption).foregroundStyle(.secondary)
+                        TextField("t.ex. KarlssonBrollop", text: $projNamn)
                             .textFieldStyle(.roundedBorder)
                     }
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Working name (arbNamn)").font(.caption).foregroundStyle(.secondary)
-                        TextField("e.g. Ceremoni", text: $arbNamn)
+                        Text("Arbetsnamn (arbNamn)").font(.caption).foregroundStyle(.secondary)
+                        TextField("t.ex. Ceremoni", text: $arbNamn)
                             .textFieldStyle(.roundedBorder)
                     }
                 }
 
-                Section("Preview") {
+                Section("Förhandsgranskning") {
                     Text("\(fotodatum)_\(card.firstSeqNr.isEmpty ? "0001" : card.firstSeqNr)_\(arbNamn.isEmpty ? "arbnamn" : arbNamn)_ErS.NEF")
                         .font(.system(.caption, design: .monospaced))
                         .foregroundStyle(.secondary)
@@ -86,7 +86,7 @@ struct MetadataFormView: View {
 
             HStack {
                 Spacer()
-                Button("Start Import") {
+                Button("Starta import") {
                     onStart(fotodatum, projNamn.trimmingCharacters(in: .whitespaces), arbNamn.trimmingCharacters(in: .whitespaces))
                 }
                 .buttonStyle(.borderedProminent)

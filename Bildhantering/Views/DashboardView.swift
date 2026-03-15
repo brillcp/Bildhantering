@@ -61,10 +61,10 @@ private struct WaitingView: View {
             Image(systemName: "sdcard")
                 .font(.system(size: 48))
                 .foregroundStyle(.secondary)
-            Text("Waiting for Nikon card…")
+            Text("Väntar på Nikon-kort…")
                 .font(.title3)
                 .foregroundStyle(.secondary)
-            Text("Insert a CF card to begin import")
+            Text("Sätt i ett CF-kort för att börja importen")
                 .font(.caption)
                 .foregroundStyle(.tertiary)
         }
@@ -82,7 +82,7 @@ private struct CardReadyView: View {
                 .foregroundStyle(Color.accentColor)
             Text(cardURL.lastPathComponent)
                 .font(.title2.bold())
-            Button("Start Import →", action: onProceed)
+            Button("Starta import →", action: onProceed)
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
         }

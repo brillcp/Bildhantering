@@ -56,7 +56,7 @@ struct ContentView: View {
             if viewModel.canGoBack {
                 HStack {
                     Button(action: { viewModel.goBack() }) {
-                        Label("Back", systemImage: "chevron.left")
+                        Label("Tillbaka", systemImage: "chevron.left")
                     }
                     .buttonStyle(.borderless)
                     Spacer()

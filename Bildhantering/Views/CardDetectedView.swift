@@ -15,17 +15,17 @@ struct CardDetectedView: View {
                 Text(card.name)
                     .font(.title.bold())
 
-                Text("\(card.totalFileCount) files in \(card.dcimFolders.count) folder(s)")
+                Text("\(card.totalFileCount) filer i \(card.dcimFolders.count) mapp(ar)")
                     .foregroundStyle(.secondary)
 
                 if !card.firstSeqNr.isEmpty {
-                    Text("Sequence \(card.firstSeqNr) – \(card.lastSeqNr)")
+                    Text("Sekvens \(card.firstSeqNr) – \(card.lastSeqNr)")
                         .font(.caption)
                         .foregroundStyle(.tertiary)
                 }
             }
 
-            Button("Select Project →", action: onProceed)
+            Button("Välj projekt →", action: onProceed)
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
         }

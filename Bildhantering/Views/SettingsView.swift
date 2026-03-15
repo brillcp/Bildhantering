@@ -8,14 +8,14 @@ struct SettingsView: View {
     var body: some View {
         VStack(spacing: 0) {
             Form {
-                Section("Camera Card") {
-                    LabeledContent("Card name prefix") {
+                Section("Kamerakort") {
+                    LabeledContent("Kortnamnsprefix") {
                         TextField("Nikon", text: $configStore.nikonCardPrefix)
                             .frame(width: 120)
                     }
                 }
 
-                Section("Volumes") {
+                Section("Volymer") {
                     VolumeRow(
                         label: "Backup",
                         name: configStore.cacheName,
@@ -39,7 +39,7 @@ struct SettingsView: View {
                 Divider()
                 HStack {
                     Spacer()
-                    Button("Continue →", action: onComplete)
+                    Button("Fortsätt →", action: onComplete)
                         .buttonStyle(.borderedProminent)
                         .disabled(!configStore.isConfigured)
                 }
@@ -58,10 +58,10 @@ private struct VolumeRow: View {
     var body: some View {
         LabeledContent(label) {
             HStack {
-                Text(name ?? "Not configured")
+                Text(name ?? "Ej konfigurerad")
                     .foregroundStyle(name != nil ? .primary : .secondary)
                 Spacer()
-                Button("Choose…", action: action)
+                Button("Välj…", action: action)
             }
         }
     }

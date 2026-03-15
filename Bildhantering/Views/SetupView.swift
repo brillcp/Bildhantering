@@ -12,9 +12,9 @@ struct SetupView: View {
                 Image(systemName: "photo.on.rectangle.angled")
                     .font(.system(size: 48))
                     .foregroundStyle(Color.accentColor)
-                Text("Welcome to Bildhantering")
+                Text("Välkommen till Bildhantering")
                     .font(.title.bold())
-                Text("Select the three folders below to get started.")
+                Text("Välj de tre mapparna nedan för att komma igång.")
                     .font(.body)
                     .foregroundStyle(.secondary)
             }
@@ -27,7 +27,7 @@ struct SetupView: View {
                 SetupRow(
                     icon: "internaldrive",
                     title: "Backup",
-                    subtitle: "Fast local cache drive",
+                    subtitle: "Lokal cachedisk",
                     name: configStore.cacheName,
                     action: { Task { await configStore.pickVolume(role: .cache) } }
                 )
@@ -35,7 +35,7 @@ struct SetupView: View {
                 SetupRow(
                     icon: "server.rack",
                     title: "NAS",
-                    subtitle: "Network attached storage",
+                    subtitle: "Nätverkslagring",
                     name: configStore.nasName,
                     action: { Task { await configStore.pickVolume(role: .nas) } }
                 )
@@ -43,7 +43,7 @@ struct SetupView: View {
                 SetupRow(
                     icon: "folder",
                     title: "Bildverkstan",
-                    subtitle: "Project library folder",
+                    subtitle: "Projektbibliotek",
                     name: configStore.bildVerkstanName,
                     action: { Task { await configStore.pickVolume(role: .bildVerkstan) } }
                 )
@@ -55,7 +55,7 @@ struct SetupView: View {
             // Continue button
             HStack {
                 Spacer()
-                Button("Continue →", action: onComplete)
+                Button("Fortsätt →", action: onComplete)
                     .buttonStyle(.borderedProminent)
                     .controlSize(.large)
                     .disabled(!configStore.isConfigured)
@@ -98,7 +98,7 @@ private struct SetupRow: View {
                     .lineLimit(1)
             }
 
-            Button(isConfigured ? "Change…" : "Choose…", action: action)
+            Button(isConfigured ? "Ändra…" : "Välj…", action: action)
                 .controlSize(.small)
         }
         .padding(.horizontal)

@@ -13,14 +13,14 @@ struct SummaryView: View {
                 .font(.system(size: 56))
                 .foregroundStyle(result.errors.isEmpty ? Color.green : Color.yellow)
 
-            Text(result.errors.isEmpty ? "Import Complete" : "Import Finished with Errors")
+            Text(result.errors.isEmpty ? "Import klar" : "Import klar med fel")
                 .font(.title2.bold())
 
             // Stats
             HStack(spacing: 32) {
-                StatItem(value: "\(result.filesCopied)", label: "Files copied")
-                StatItem(value: "\(result.cacheFolders.count)", label: "Cache folder(s)")
-                StatItem(value: "\(result.nasFolders.count)", label: "NAS folder(s)")
+                StatItem(value: "\(result.filesCopied)", label: "Filer kopierade")
+                StatItem(value: "\(result.cacheFolders.count)", label: "Backup-mapp(ar)")
+                StatItem(value: "\(result.nasFolders.count)", label: "NAS-mapp(ar)")
             }
 
             // Destination folders
@@ -33,7 +33,7 @@ struct SummaryView: View {
 
             // Errors
             if !result.errors.isEmpty {
-                GroupBox("Errors (\(result.errors.count))") {
+                GroupBox("Fel (\(result.errors.count))") {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 4) {
                             ForEach(result.errors, id: \.self) { error in
@@ -49,7 +49,7 @@ struct SummaryView: View {
                 .padding(.horizontal)
             }
 
-            Button("Eject Card & Finish") { onEject() }
+            Button("Mata ut kort & avsluta") { onEject() }
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
 

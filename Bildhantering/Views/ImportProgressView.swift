@@ -15,9 +15,9 @@ struct ImportProgressView: View {
                 .symbolEffect(.rotate, isActive: engine.progress < 1)
 
             VStack(spacing: 8) {
-                Text("Importing…")
+                Text("Importerar…")
                     .font(.title2.bold())
-                Text("\(engine.filesProcessed) of \(engine.totalFiles) files")
+                Text("\(engine.filesProcessed) av \(engine.totalFiles) filer")
                     .foregroundStyle(.secondary)
                 if !engine.currentFileName.isEmpty {
                     Text(engine.currentFileName)

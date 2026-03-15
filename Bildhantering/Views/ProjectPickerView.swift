@@ -17,14 +17,14 @@ struct ProjectPickerView: View {
             // Header
             HStack {
                 VStack(alignment: .leading) {
-                    Text("Select Project")
+                    Text("Välj projekt")
                         .font(.title2.bold())
-                    Text("Card: \(card.name) · \(card.totalFileCount) files")
+                    Text("Kort: \(card.name) · \(card.totalFileCount) filer")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
                 Spacer()
-                Button("New Job") { onSelect(nil) }
+                Button("Nytt jobb") { onSelect(nil) }
                     .buttonStyle(.bordered)
             }
             .padding()
@@ -33,9 +33,9 @@ struct ProjectPickerView: View {
 
             if projects.isEmpty {
                 ContentUnavailableView(
-                    "No Projects",
+                    "Inga projekt",
                     systemImage: "folder",
-                    description: Text("No projects found in BILD_verkstan. Click \"New Job\" to create one.")
+                    description: Text("Inga projekt hittades i BILD_verkstan. Klicka på \"Nytt jobb\" för att skapa ett.")
                 )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
