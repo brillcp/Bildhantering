@@ -9,9 +9,9 @@ struct DashboardView: View {
         VStack(spacing: 0) {
             // Volume status bar
             HStack(spacing: 24) {
-                VolumeStatusItem(label: "Backup", isOnline: viewModel.volumeStatus(for: viewModel.configStore.cacheName))
-                VolumeStatusItem(label: "NAS", isOnline: viewModel.volumeStatus(for: viewModel.configStore.nasName))
-                VolumeStatusItem(label: "Bildverkstan", isOnline: viewModel.configStore.bildVerkstanName != nil)
+                VolumeStatusItem(label: "Backup", isOnline: viewModel.volumeStatus(for: .cache))
+                VolumeStatusItem(label: "NAS", isOnline: viewModel.volumeStatus(for: .nas))
+                VolumeStatusItem(label: "Bildverkstan", isOnline: viewModel.volumeStatus(for: .bildVerkstan))
                 Spacer()
             }
             .padding()

@@ -118,9 +118,9 @@ final class WorkflowViewModel {
 
     // MARK: - Volume helpers
 
-    func volumeStatus(for name: String?) -> Bool {
-        guard let name else { return false }
-        return volumeMonitor.isVolumePresent(name: name)
+    func volumeStatus(for role: VolumeRole) -> Bool {
+        guard let url = configStore.resolveURL(role: role) else { return false }
+        return FileManager.default.fileExists(atPath: url.path)
     }
 
     var bildVerkstanProjects: [String] {
