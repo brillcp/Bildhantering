@@ -126,8 +126,6 @@ final class WorkflowViewModel {
 
     var bildVerkstanProjects: [String] {
         guard let url = configStore.resolveURL(role: .bildVerkstan) else { return [] }
-        _ = url.startAccessingSecurityScopedResource()
-        defer { url.stopAccessingSecurityScopedResource() }
         let contents = (try? FileManager.default.contentsOfDirectory(
             at: url,
             includingPropertiesForKeys: [.isDirectoryKey],
