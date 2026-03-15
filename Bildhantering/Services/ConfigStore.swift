@@ -93,9 +93,9 @@ final class ConfigStore {
 
     func pickVolume(role: VolumeRole) async {
         let prompts: [VolumeRole: String] = [
-            .cache: "Select Cache / RAW_2 drive root folder",
-            .nas: "Select NAS / RAW_1 drive root folder",
-            .bildVerkstan: "Select BILD_verkstan folder"
+            .cache: "Select Backup folder",
+            .nas: "Select NAS folder",
+            .bildVerkstan: "Select Bildverkstan folder"
         ]
         guard let url = await pickFolder(prompt: prompts[role] ?? "Select folder") else { return }
         savePath(url: url, role: role)
